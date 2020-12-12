@@ -204,6 +204,8 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="MathTexWord_TemporaryKey.pfx" />
+    <Compile Include="ShapeManager.cs" />
+    <Compile Include="TableManager.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>

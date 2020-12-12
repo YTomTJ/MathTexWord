@@ -1,8 +1,5 @@
 ﻿using Microsoft.Office.Tools.Ribbon;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Word = Microsoft.Office.Interop.Word;
 
@@ -11,23 +8,24 @@ namespace MathTexWord {
     public partial class Designer {
 
         private static Editor editor;
-        private readonly string IDHeader = "##_MathTexWord";
-        private readonly string IDTail= "droWxeThtaM_##";
-        private static ulong IDIndex = 0;
 
         private void Designer_Load(object sender, RibbonUIEventArgs e) {
             editor = new Editor();
-            //formulaTableIds = new List<Word.Table>();
-            //formulaTexts = new Dictionary<string, string>();
         }
 
+
+        /// <summary>
+        /// Insert new formula in table(single line).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void butInsert_Click(object sender, RibbonControlEventArgs e) {
 
             Word.Application oApp = Globals.ThisAddIn.Application;
             Word.Document oDoc = oApp.ActiveDocument;
 
             Word.Table table = oDoc.Tables.Add(oApp.Selection.Range, 1, 2);
-            table.Descr = GenerateId();
+            table.Descr = TableManager.GenerateId();
 
             {
                 Word.Cell cell = table.Cell(1, 1);
@@ -48,139 +46,123 @@ namespace MathTexWord {
             table.AutoFitBehavior(Word.WdAutoFitBehavior.wdAutoFitWindow); // Fill page width
         }
 
+        /// <summary>
+        /// Edit formula or insert a new inline formula.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void butEdit_Click(object sender, RibbonControlEventArgs e) {
-
+            // Check selection
             Word.Application oApp = Globals.ThisAddIn.Application;
-            Word.Document oDoc = oApp.ActiveDocument;
-
-            // Check table
-            Word.Table table = null;
             if(oApp.Selection.Tables.Count > 0) {
-                table = oApp.Selection.Tables[1];
-            }
-            //for(int i = 1; i <= oApp.Selection.Tables.Count; ++i) {
-            //    var tab = oApp.Selection.Tables[i];
-
-            //}
-            if(table != null) {
-                OpenEdit(table);
+                // Edit formula in table(single line)
+                OpenEdit(oApp.Selection.Tables[1]);
+            } else if(oApp.Selection.Type == Word.WdSelectionType.wdSelectionInlineShape
+                && oApp.Selection.InlineShapes != null && oApp.Selection.InlineShapes.Count == 1) {
+                // Edit inline formula
+                OpenEdit(oApp.Selection.InlineShapes[1]);
             } else {
-                OpenEdit(oApp.Selection.Range);
+                // New inline formula.
+                OpenEdit();
             }
         }
 
+
+        #region Table Formula
 
         /// <summary>
-        /// Insert formula at normal location.
+        /// Edit or update formula in table(single line).
         /// </summary>
-        /// <param name="range"></param>
-        private void OpenEdit(Word.Range range) {
-
-            // Load formula latex.
-            editor.Text = $"Editor - Temproary";
-            editor.inputLatex = "";
-            //editor.outputScale = 2.0;
-
-            // Edit it and retrieve output image.
-            if(editor.ShowDialog() == DialogResult.OK) {
-                if(editor.outputImage != null) {
-                    Clipboard.SetDataObject(editor.outputImage);
-                    range.Paste();
-                    // Modify image scale.
-                    foreach(Word.InlineShape ils in range.InlineShapes) {
-                        if(ils != null && ils.Type == Word.WdInlineShapeType.wdInlineShapePicture) {
-                            ils.ScaleWidth = (float)(100.0 / editor.outputScale);
-                            ils.ScaleHeight = (float)(100.0 / editor.outputScale);
-                            ils.Range.Paragraphs.BaseLineAlignment = Word.WdBaselineAlignment.wdBaselineAlignFarEast50;
-                        }
-                    }
-                }
-            }
-        }
-
+        /// <param name="table"></param>
         private void OpenEdit(Word.Table table) {
 
             // Load formula latex.
-            var id = GetId(table);
+            var id = TableManager.GetId(table);
             if(id is null) {
                 id = "New";
-                SetFormula(table, "", true);
+                TableManager.SetFormula(table, null);
             }
             editor.Text = $"Editor - {id}";
-            editor.inputLatex = GetFormula(table);
+            editor.inputLatex = TableManager.GetFormula(table);
             editor.SetInfo($">>> {id}\n");
 
             // Edit it and retrieve output image.
             if(editor.ShowDialog() == DialogResult.OK) {
                 if(editor.outputImage != null) {
-                    SetFormula(table, editor.inputLatex);
+                    TableManager.SetFormula(table, editor.inputLatex);
                     Clipboard.SetDataObject(editor.outputImage);
                     table.Cell(1, 1).Range.Paste();
                     // Modify image scale.
                     foreach(Word.InlineShape ils in table.Cell(1, 1).Range.InlineShapes) {
                         if(ils != null && ils.Type == Word.WdInlineShapeType.wdInlineShapePicture) {
-                            ils.ScaleWidth = (float)(100.0 / editor.outputScale);
-                            ils.ScaleHeight = (float)(100.0 / editor.outputScale);
+                            ils.ScaleWidth = (float)(editor.outputScale * 100.0 / editor.baseScale);
+                            ils.ScaleHeight = (float)(editor.outputScale * 100.0 / editor.baseScale);
                         }
                     }
                 }
             }
         }
 
+        #endregion Table Formula
 
-        #region MathTexWord Tools
 
-        private string GenerateId() {
-            return $"{IDHeader};{IDIndex++};{DateTime.Now.ToString("yyyyMMddHHmmss")}:\\sqrt{{A}}:{IDTail}";
-        }
+        #region Inline Formula
 
-        private bool CheckDescr(Word.Table table) {
-            return table.Descr != null 
-                && table.Descr.Contains(IDHeader)
-                && table.Descr.Contains(IDTail);
-        }
-
-        private string GetId(Word.Table table) {
-            if(CheckDescr(table)) {
-                int start = table.Descr.IndexOf(IDHeader);
-                int split = table.Descr.IndexOf(':', start);
-                return table.Descr.Substring(start, split - start);
+        /// <summary>
+        /// Add new inline formula.
+        /// </summary>
+        private void OpenEdit() {
+            // Load formula latex.
+            editor.Text = $"Editor - Temproary";
+            editor.inputLatex = "";
+            // Edit it and retrieve output image.
+            if(editor.ShowDialog() == DialogResult.OK) {
+                if(editor.outputImage != null) {
+                    PastePicture(editor.outputImage, editor.inputLatex);
+                }
             }
-            return null;
         }
 
-        private string GetFormula(Word.Table table) {
-            if(CheckDescr(table)) {
-                int start = table.Descr.IndexOf(IDHeader);
-                int split = table.Descr.IndexOf(':', start) + 1;
-                int end = table.Descr.IndexOf(IDTail) - 1;
-                return table.Descr.Substring(split, end - split);
-            }
-            return null;
-        }
-
-        private void SetFormula(Word.Table table, string formula, bool newtab = false) {
-            if(CheckDescr(table)) {
-                int start = table.Descr.IndexOf(IDHeader);
-                int split = table.Descr.IndexOf(':', start);
-                int end = table.Descr.IndexOf(IDTail) + IDTail.Length;
-                table.Descr = table.Descr.Substring(0, start)
-                    + $"{table.Descr.Substring(start, split - start)}:{formula}:{IDTail}"
-                    + table.Descr.Substring(end);
+        /// <summary>
+        /// Edit exist inline formula.
+        /// </summary>
+        /// <param name="shape"></param>
+        private void OpenEdit(Word.InlineShape shape) {
+            // Load formula latex.
+            var id = ShapeManager.GetId(shape);
+            if(id is null) {
                 return;
             }
-            if(newtab) {
-                if(table.Descr != null) {
-                    if(table.Descr.StartsWith(IDHeader)) {
-                        //TODO: I should delete this in later version.
-                        table.Descr = "";
-                    }
+            editor.Text = $"Editor - {id}";
+            editor.inputLatex = ShapeManager.GetFormula(shape);
+            editor.SetInfo($">>> {id}\n");
+            // Edit it and retrieve output image.
+            if(editor.ShowDialog() == DialogResult.OK) {
+                if(editor.outputImage != null) {
+                    shape.Delete();
+                    PastePicture(editor.outputImage, editor.inputLatex);
                 }
-                table.Descr += GenerateId();
-                SetFormula(table, formula);
             }
         }
 
-        #endregion MathTexWord Tools
+        private Word.InlineShape PastePicture(Image image, string formula = null) {
+            var range = Globals.ThisAddIn.Application.Selection.Range;
+            var c0 = range.InlineShapes.Count;
+            Clipboard.SetDataObject(image);
+            range.Paste();
+            if(range.InlineShapes.Count == c0 + 1) {
+                var shape = range.InlineShapes[range.InlineShapes.Count];
+                ShapeManager.SetFormula(shape, formula);
+                shape.ScaleWidth = (float)(editor.outputScale * 100.0 / editor.baseScale);
+                shape.ScaleHeight = (float)(editor.outputScale * 100.0 / editor.baseScale);
+                shape.Range.Paragraphs.BaseLineAlignment = Word.WdBaselineAlignment.wdBaselineAlignFarEast50;
+                return shape;
+            } else {
+                MessageBox.Show("Paste output image failed.");
+            }
+            return null;
+        }
+
+        #endregion Inline Formula
     }
 }

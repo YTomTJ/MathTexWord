@@ -7,8 +7,9 @@ namespace MathTexWord {
 
     public partial class Editor : Form {
 
+        internal double baseScale = 10.0;
         internal string inputLatex = null;
-        internal double outputScale = 2.0;
+        internal double outputScale = 1.0;
         internal Image outputImage = null;
         internal string outputSvg = null;
 
@@ -24,13 +25,11 @@ namespace MathTexWord {
             cmbFontSize.SelectedIndex = 4;
             txtInput.Text = inputLatex;
             
-            //txtOutputInfo.Clear();
-
             picFormula.Image = null;
             outputImage = null;
             outputSvg = null;
 
-            // TODO: Load previous formula
+            // Load previous formula
             Preview();
         }
 
@@ -92,9 +91,7 @@ namespace MathTexWord {
         private void Convert() {
             try {
                 inputLatex = txtInput.Text;
-                //var ms = Renderer.ConvertFormula(inputLatex, out string err, scale: outputScale, color: Color.White);
-                //outputImage = new Bitmap(ms);
-                outputImage = Renderer.ConvertFormulaEX(inputLatex, out string err, out string svgtext, scale: outputScale, color: Color.White);
+                outputImage = Renderer.ConvertFormulaEX(inputLatex, out string err, out string svgtext, scale: baseScale, color: Color.White);
                 outputSvg = svgtext;
                 this.DialogResult = DialogResult.OK;
             } catch {
@@ -109,7 +106,7 @@ namespace MathTexWord {
             txtOutputInfo.Text = info;
         }
 
-        private void NumScale_ValueChanged(object sender, EventArgs e) {
+        private void numScale_ValueChanged(object sender, EventArgs e) {
             outputScale = (double)numScale.Value;
         }
     }

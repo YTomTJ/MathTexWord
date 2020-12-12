@@ -31,9 +31,9 @@ namespace MathTexWord {
             this.butConvert = new System.Windows.Forms.Button();
             this.butPreview = new System.Windows.Forms.Button();
             this.txtOutputInfo = new System.Windows.Forms.RichTextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.numScale = new System.Windows.Forms.NumericUpDown();
             this.butInfo = new System.Windows.Forms.Button();
+            this.numScale = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picFormula)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numScale)).BeginInit();
             this.SuspendLayout();
@@ -134,48 +134,6 @@ namespace MathTexWord {
             this.txtOutputInfo.TabIndex = 5;
             this.txtOutputInfo.Text = "";
             // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(12, 416);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 17);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "比例:";
-            // 
-            // numScale
-            // 
-            this.numScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.numScale.DecimalPlaces = 2;
-            this.numScale.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numScale.Increment = new decimal(new int[] {
-            25,
-            0,
-            0,
-            131072});
-            this.numScale.Location = new System.Drawing.Point(62, 414);
-            this.numScale.Maximum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.numScale.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numScale.Name = "numScale";
-            this.numScale.Size = new System.Drawing.Size(70, 22);
-            this.numScale.TabIndex = 7;
-            this.numScale.Value = new decimal(new int[] {
-            20,
-            0,
-            0,
-            65536});
-            this.numScale.ValueChanged += new System.EventHandler(this.NumScale_ValueChanged);
-            // 
             // butInfo
             // 
             this.butInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -188,18 +146,60 @@ namespace MathTexWord {
             this.butInfo.UseVisualStyleBackColor = true;
             this.butInfo.Click += new System.EventHandler(this.butInfo_Click);
             // 
+            // numScale
+            // 
+            this.numScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.numScale.DecimalPlaces = 2;
+            this.numScale.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.numScale.Increment = new decimal(new int[] {
+            25,
+            0,
+            0,
+            131072});
+            this.numScale.Location = new System.Drawing.Point(62, 413);
+            this.numScale.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numScale.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numScale.Name = "numScale";
+            this.numScale.Size = new System.Drawing.Size(70, 22);
+            this.numScale.TabIndex = 9;
+            this.numScale.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numScale.ValueChanged += new System.EventHandler(this.numScale_ValueChanged);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.Location = new System.Drawing.Point(12, 415);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(44, 17);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "比例:";
+            // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 473);
             this.Controls.Add(this.numScale);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.txtOutputInfo);
             this.Controls.Add(this.butInfo);
             this.Controls.Add(this.butPreview);
             this.Controls.Add(this.butConvert);
             this.Controls.Add(this.cmbFontSize);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.picFormula);
             this.Controls.Add(this.txtInput);
@@ -225,8 +225,8 @@ namespace MathTexWord {
         private System.Windows.Forms.Button butConvert;
         private System.Windows.Forms.Button butPreview;
         private System.Windows.Forms.RichTextBox txtOutputInfo;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown numScale;
         private System.Windows.Forms.Button butInfo;
+        private System.Windows.Forms.NumericUpDown numScale;
+        private System.Windows.Forms.Label label2;
     }
 }
