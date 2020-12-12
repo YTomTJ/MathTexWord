@@ -91,6 +91,7 @@ namespace MathTexWord {
                         if(ils != null && ils.Type == Word.WdInlineShapeType.wdInlineShapePicture) {
                             ils.ScaleWidth = (float)(100.0 / editor.outputScale);
                             ils.ScaleHeight = (float)(100.0 / editor.outputScale);
+                            ils.Range.Paragraphs.BaseLineAlignment = Word.WdBaselineAlignment.wdBaselineAlignFarEast50;
                         }
                     }
                 }

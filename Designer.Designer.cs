@@ -40,15 +40,15 @@ namespace MathTexWord {
             // tabMathTex
             // 
             this.tabMathTex.ControlId.ControlIdType = Microsoft.Office.Tools.Ribbon.RibbonControlIdType.Office;
+            this.tabMathTex.ControlId.OfficeId = "TabHome";
             this.tabMathTex.Groups.Add(this.grpTool);
-            this.tabMathTex.Label = "MathTex";
             this.tabMathTex.Name = "tabMathTex";
             // 
             // grpTool
             // 
             this.grpTool.Items.Add(this.butInsert);
             this.grpTool.Items.Add(this.butEdit);
-            this.grpTool.Label = "工具";
+            this.grpTool.Label = "MathTex";
             this.grpTool.Name = "grpTool";
             // 
             // butInsert

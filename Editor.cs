@@ -10,6 +10,7 @@ namespace MathTexWord {
         internal string inputLatex = null;
         internal double outputScale = 2.0;
         internal Image outputImage = null;
+        internal string outputSvg = null;
 
         public Editor() {
             InitializeComponent();
@@ -27,6 +28,7 @@ namespace MathTexWord {
 
             picFormula.Image = null;
             outputImage = null;
+            outputSvg = null;
 
             // TODO: Load previous formula
             Preview();
@@ -57,10 +59,15 @@ namespace MathTexWord {
             Convert();
         }
 
+        private void butInfo_Click(object sender, EventArgs e) {
+            txtOutputInfo.Text = outputSvg;
+        }
+
         private void Editor_FormClosing(object sender, FormClosingEventArgs e) {
             if(e.CloseReason == CloseReason.UserClosing) {
                 e.Cancel = true;
                 outputImage = null;
+                outputSvg = null;
                 this.DialogResult = DialogResult.Cancel;
                 this.Hide();
             }
@@ -68,9 +75,12 @@ namespace MathTexWord {
 
         private void Preview() {
             txtInput.Enabled = false;
-            var ms = Renderer.ConvertFormula(txtInput.Text, out string err);
+            //var ms = Renderer.ConvertFormula(txtInput.Text, out string err);
+            var bitmap = Renderer.ConvertFormulaEX(txtInput.Text, out string err, out string svgtext);
             if(err is null) {
-                picFormula.Image = new Bitmap(ms);
+                //picFormula.Image = new Bitmap(ms);
+                outputSvg = svgtext;
+                picFormula.Image = bitmap;
                 txtOutputInfo.Text += "\nSucceed.";
             } else {
                 txtOutputInfo.Text += "\n" + err;
@@ -82,11 +92,14 @@ namespace MathTexWord {
         private void Convert() {
             try {
                 inputLatex = txtInput.Text;
-                var ms = Renderer.ConvertFormula(inputLatex, out string err, scale: outputScale, color: Color.White);
-                outputImage = new Bitmap(ms);
+                //var ms = Renderer.ConvertFormula(inputLatex, out string err, scale: outputScale, color: Color.White);
+                //outputImage = new Bitmap(ms);
+                outputImage = Renderer.ConvertFormulaEX(inputLatex, out string err, out string svgtext, scale: outputScale, color: Color.White);
+                outputSvg = svgtext;
                 this.DialogResult = DialogResult.OK;
             } catch {
                 outputImage = null;
+                outputSvg = null;
                 this.DialogResult = DialogResult.None;
             }
             this.Hide();
@@ -94,6 +107,10 @@ namespace MathTexWord {
 
         internal void SetInfo(string info) {
             txtOutputInfo.Text = info;
+        }
+
+        private void NumScale_ValueChanged(object sender, EventArgs e) {
+            outputScale = (double)numScale.Value;
         }
     }
 }
