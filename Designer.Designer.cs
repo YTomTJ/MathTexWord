@@ -42,6 +42,7 @@ namespace MathTexWord {
             this.tabMathTex.ControlId.ControlIdType = Microsoft.Office.Tools.Ribbon.RibbonControlIdType.Office;
             this.tabMathTex.ControlId.OfficeId = "TabHome";
             this.tabMathTex.Groups.Add(this.grpTool);
+            this.tabMathTex.Label = "TabHome";
             this.tabMathTex.Name = "tabMathTex";
             // 
             // grpTool

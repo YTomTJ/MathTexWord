@@ -7,9 +7,9 @@ using System.Security;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("MathTexWord")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Latex render for Word.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("ytom")]
 [assembly: AssemblyProduct("MathTexWord")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
