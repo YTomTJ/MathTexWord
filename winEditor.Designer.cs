@@ -1,10 +1,12 @@
 ﻿
 namespace MathTexWord {
-    partial class Editor {
+
+    partial class winEditor {
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        public System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -23,9 +25,8 @@ namespace MathTexWord {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        public void InitializeComponent() {
             this.txtInput = new System.Windows.Forms.RichTextBox();
-            this.picFormula = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbFontSize = new System.Windows.Forms.ComboBox();
             this.butConvert = new System.Windows.Forms.Button();
@@ -34,8 +35,9 @@ namespace MathTexWord {
             this.butInfo = new System.Windows.Forms.Button();
             this.numScale = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.picFormula)).BeginInit();
+            this.picFormula = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.numScale)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picFormula)).BeginInit();
             this.SuspendLayout();
             // 
             // txtInput
@@ -45,25 +47,12 @@ namespace MathTexWord {
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtInput.BackColor = System.Drawing.Color.Wheat;
             this.txtInput.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtInput.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtInput.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtInput.Location = new System.Drawing.Point(12, 178);
             this.txtInput.Name = "txtInput";
             this.txtInput.Size = new System.Drawing.Size(360, 160);
             this.txtInput.TabIndex = 0;
             this.txtInput.Text = "";
-            // 
-            // picFormula
-            // 
-            this.picFormula.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.picFormula.InitialImage = null;
-            this.picFormula.Location = new System.Drawing.Point(12, 12);
-            this.picFormula.Name = "picFormula";
-            this.picFormula.Size = new System.Drawing.Size(360, 160);
-            this.picFormula.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.picFormula.TabIndex = 1;
-            this.picFormula.TabStop = false;
             // 
             // label1
             // 
@@ -106,7 +95,6 @@ namespace MathTexWord {
             this.butConvert.TabIndex = 4;
             this.butConvert.Text = "完成";
             this.butConvert.UseVisualStyleBackColor = true;
-            this.butConvert.Click += new System.EventHandler(this.butConvert_Click);
             // 
             // butPreview
             // 
@@ -118,7 +106,6 @@ namespace MathTexWord {
             this.butPreview.TabIndex = 4;
             this.butPreview.Text = "预览";
             this.butPreview.UseVisualStyleBackColor = true;
-            this.butPreview.Click += new System.EventHandler(this.butPreview_Click);
             // 
             // txtOutputInfo
             // 
@@ -126,7 +113,7 @@ namespace MathTexWord {
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOutputInfo.BackColor = System.Drawing.SystemColors.Info;
             this.txtOutputInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtOutputInfo.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOutputInfo.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtOutputInfo.Location = new System.Drawing.Point(12, 344);
             this.txtOutputInfo.Name = "txtOutputInfo";
             this.txtOutputInfo.ReadOnly = true;
@@ -144,7 +131,6 @@ namespace MathTexWord {
             this.butInfo.TabIndex = 4;
             this.butInfo.Text = "?";
             this.butInfo.UseVisualStyleBackColor = true;
-            this.butInfo.Click += new System.EventHandler(this.butInfo_Click);
             // 
             // numScale
             // 
@@ -171,11 +157,10 @@ namespace MathTexWord {
             this.numScale.Size = new System.Drawing.Size(70, 22);
             this.numScale.TabIndex = 9;
             this.numScale.Value = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
-            0});
-            this.numScale.ValueChanged += new System.EventHandler(this.numScale_ValueChanged);
+            65536});
             // 
             // label2
             // 
@@ -188,7 +173,20 @@ namespace MathTexWord {
             this.label2.TabIndex = 8;
             this.label2.Text = "比例:";
             // 
-            // Editor
+            // picFormula
+            // 
+            this.picFormula.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.picFormula.InitialImage = null;
+            this.picFormula.Location = new System.Drawing.Point(12, 12);
+            this.picFormula.Name = "picFormula";
+            this.picFormula.Size = new System.Drawing.Size(360, 160);
+            this.picFormula.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.picFormula.TabIndex = 1;
+            this.picFormula.TabStop = false;
+            // 
+            // winEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -204,13 +202,11 @@ namespace MathTexWord {
             this.Controls.Add(this.picFormula);
             this.Controls.Add(this.txtInput);
             this.MinimumSize = new System.Drawing.Size(400, 480);
-            this.Name = "Editor";
+            this.Name = "winEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Editor";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Editor_FormClosing);
-            this.Load += new System.EventHandler(this.Editor_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.picFormula)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numScale)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picFormula)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -218,15 +214,15 @@ namespace MathTexWord {
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox txtInput;
-        private System.Windows.Forms.PictureBox picFormula;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cmbFontSize;
-        private System.Windows.Forms.Button butConvert;
-        private System.Windows.Forms.Button butPreview;
-        private System.Windows.Forms.RichTextBox txtOutputInfo;
-        private System.Windows.Forms.Button butInfo;
-        private System.Windows.Forms.NumericUpDown numScale;
-        private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.RichTextBox txtInput;
+        public System.Windows.Forms.PictureBox picFormula;
+        public System.Windows.Forms.Label label1;
+        public System.Windows.Forms.ComboBox cmbFontSize;
+        public System.Windows.Forms.Button butConvert;
+        public System.Windows.Forms.Button butPreview;
+        public System.Windows.Forms.RichTextBox txtOutputInfo;
+        public System.Windows.Forms.Button butInfo;
+        public System.Windows.Forms.NumericUpDown numScale;
+        public System.Windows.Forms.Label label2;
     }
 }

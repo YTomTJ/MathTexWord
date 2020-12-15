@@ -36,7 +36,7 @@
     <PublishUrl>publish\</PublishUrl>
     <InstallUrl />
     <TargetCulture>zh-chs</TargetCulture>
-    <ApplicationVersion>0.1.2.1</ApplicationVersion>
+    <ApplicationVersion>0.2.0.0</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>false</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -195,11 +195,12 @@
     <Compile Include="Designer.Designer.cs">
       <DependentUpon>Designer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editor.cs">
+    <Compile Include="Editor.cs" />
+    <Compile Include="winEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editor.Designer.cs">
-      <DependentUpon>Editor.cs</DependentUpon>
+    <Compile Include="winEditor.Designer.cs">
+      <DependentUpon>winEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -207,8 +208,8 @@
     <EmbeddedResource Include="Designer.resx">
       <DependentUpon>Designer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Editor.resx">
-      <DependentUpon>Editor.cs</DependentUpon>
+    <EmbeddedResource Include="winEditor.resx">
+      <DependentUpon>winEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -248,6 +249,15 @@
       <Project>{4ca52433-4f53-4374-abf9-dab1e0959aa4}</Project>
       <Name>MathTexParser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\F1Help_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\Next_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\Previous_16x.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

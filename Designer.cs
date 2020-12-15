@@ -7,10 +7,7 @@ namespace MathTexWord {
 
     public partial class Designer {
 
-        private static Editor editor;
-
         private void Designer_Load(object sender, RibbonUIEventArgs e) {
-            editor = new Editor();
         }
 
 
@@ -25,7 +22,7 @@ namespace MathTexWord {
             Word.Document oDoc = oApp.ActiveDocument;
 
             Word.Table table = oDoc.Tables.Add(oApp.Selection.Range, 1, 2);
-            table.Descr = TableManager.GenerateId();
+            //table.Descr = TableManager.GenerateId();
 
             {
                 Word.Cell cell = table.Cell(1, 1);
@@ -39,11 +36,13 @@ namespace MathTexWord {
                 cell.Range.Text = "(0.0)";
             }
 
-            OpenEdit(table);
-
             table.Columns[2].AutoFit();
             table.AllowAutoFit = true;
             table.AutoFitBehavior(Word.WdAutoFitBehavior.wdAutoFitWindow); // Fill page width
+
+            table.Cell(1, 2).Range.Select();
+
+            OpenEdit();
         }
 
         /// <summary>
@@ -54,18 +53,20 @@ namespace MathTexWord {
         private void butEdit_Click(object sender, RibbonControlEventArgs e) {
             // Check selection
             Word.Application oApp = Globals.ThisAddIn.Application;
-            if(oApp.Selection.Tables.Count > 0) {
+            if(oApp.Selection.Type == Word.WdSelectionType.wdSelectionInlineShape
+                && oApp.Selection.InlineShapes != null && oApp.Selection.InlineShapes.Count == 1) {
+                // Edit formula in picture
+                OpenEdit(oApp.Selection.InlineShapes[1]);
+            } else if(oApp.Selection.Tables.Count > 0) {
+                //TODO: I will abondon this method.
                 // Edit formula in table(single line)
                 OpenEdit(oApp.Selection.Tables[1]);
-            } else if(oApp.Selection.Type == Word.WdSelectionType.wdSelectionInlineShape
-                && oApp.Selection.InlineShapes != null && oApp.Selection.InlineShapes.Count == 1) {
-                // Edit inline formula
-                OpenEdit(oApp.Selection.InlineShapes[1]);
             } else {
                 // New inline formula.
                 OpenEdit();
             }
         }
+
 
 
         #region Table Formula
@@ -79,24 +80,25 @@ namespace MathTexWord {
             // Load formula latex.
             var id = TableManager.GetId(table);
             if(id is null) {
-                id = "New";
-                TableManager.SetFormula(table, null);
+                //id = "New";
+                //TableManager.SetFormula(table, null);
+                return;
             }
-            editor.Text = $"Editor - {id}";
-            editor.inputLatex = TableManager.GetFormula(table);
-            editor.SetInfo($">>> {id}\n");
-
             // Edit it and retrieve output image.
-            if(editor.ShowDialog() == DialogResult.OK) {
-                if(editor.outputImage != null) {
-                    TableManager.SetFormula(table, editor.inputLatex);
-                    Clipboard.SetDataObject(editor.outputImage);
+            if(Editor.Instance.Update(TableManager.GetFormula(table), id) == DialogResult.OK) {
+                if(Editor.Instance.OutputImage != null) {
+                    TableManager.SetFormula(table, Editor.Instance.Latex);
+                    Clipboard.SetDataObject(Editor.Instance.OutputImage);
                     table.Cell(1, 1).Range.Paste();
                     // Modify image scale.
                     foreach(Word.InlineShape ils in table.Cell(1, 1).Range.InlineShapes) {
                         if(ils != null && ils.Type == Word.WdInlineShapeType.wdInlineShapePicture) {
-                            ils.ScaleWidth = (float)(editor.outputScale * 100.0 / editor.baseScale);
-                            ils.ScaleHeight = (float)(editor.outputScale * 100.0 / editor.baseScale);
+                            ils.ScaleWidth = (float)(Editor.Instance.Scale * 100.0 / Editor.Instance.BaseScale);
+                            ils.ScaleHeight = (float)(Editor.Instance.Scale * 100.0 / Editor.Instance.BaseScale);
+                            
+                            ils.Title = table.Descr;
+                            table.Descr = "";
+                            MessageBox.Show("This table has been updated to picture.");
                         }
                     }
                 }
@@ -112,13 +114,10 @@ namespace MathTexWord {
         /// Add new inline formula.
         /// </summary>
         private void OpenEdit() {
-            // Load formula latex.
-            editor.Text = $"Editor - Temproary";
-            editor.inputLatex = "";
             // Edit it and retrieve output image.
-            if(editor.ShowDialog() == DialogResult.OK) {
-                if(editor.outputImage != null) {
-                    PastePicture(editor.outputImage, editor.inputLatex);
+            if(Editor.Instance.New() == DialogResult.OK) {
+                if(Editor.Instance.OutputImage != null) {
+                    PastePicture(Editor.Instance.OutputImage, Editor.Instance.Latex);
                 }
             }
         }
@@ -132,15 +131,12 @@ namespace MathTexWord {
             var id = ShapeManager.GetId(shape);
             if(id is null) {
                 return;
-            }
-            editor.Text = $"Editor - {id}";
-            editor.inputLatex = ShapeManager.GetFormula(shape);
-            editor.SetInfo($">>> {id}\n");
+            }         
             // Edit it and retrieve output image.
-            if(editor.ShowDialog() == DialogResult.OK) {
-                if(editor.outputImage != null) {
+            if(Editor.Instance.Update(ShapeManager.GetFormula(shape), $"Editor.Instance - {id}") == DialogResult.OK) {
+                if(Editor.Instance.OutputImage != null) {
                     shape.Delete();
-                    PastePicture(editor.outputImage, editor.inputLatex);
+                    PastePicture(Editor.Instance.OutputImage, Editor.Instance.Latex);
                 }
             }
         }
@@ -153,8 +149,8 @@ namespace MathTexWord {
             if(range.InlineShapes.Count == c0 + 1) {
                 var shape = range.InlineShapes[range.InlineShapes.Count];
                 ShapeManager.SetFormula(shape, formula);
-                shape.ScaleWidth = (float)(editor.outputScale * 100.0 / editor.baseScale);
-                shape.ScaleHeight = (float)(editor.outputScale * 100.0 / editor.baseScale);
+                shape.ScaleWidth = (float)(Editor.Instance.Scale * 100.0 / Editor.Instance.BaseScale);
+                shape.ScaleHeight = (float)(Editor.Instance.Scale * 100.0 / Editor.Instance.BaseScale);
                 shape.Range.Paragraphs.BaseLineAlignment = Word.WdBaselineAlignment.wdBaselineAlignFarEast50;
                 return shape;
             } else {
@@ -164,5 +160,19 @@ namespace MathTexWord {
         }
 
         #endregion Inline Formula
+
+        #region Other Actions
+        private void butUpper_Click(object sender, RibbonControlEventArgs e) {
+
+        }
+
+        private void butLower_Click(object sender, RibbonControlEventArgs e) {
+
+        }
+
+        private void butHelp_Click(object sender, RibbonControlEventArgs e) {
+
+        }
+        #endregion Other Actions
     }
 }

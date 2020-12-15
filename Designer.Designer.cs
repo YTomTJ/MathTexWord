@@ -33,6 +33,9 @@ namespace MathTexWord {
             this.grpTool = this.Factory.CreateRibbonGroup();
             this.butInsert = this.Factory.CreateRibbonButton();
             this.butEdit = this.Factory.CreateRibbonButton();
+            this.butUpper = this.Factory.CreateRibbonButton();
+            this.butLower = this.Factory.CreateRibbonButton();
+            this.butHelp = this.Factory.CreateRibbonButton();
             this.tabMathTex.SuspendLayout();
             this.grpTool.SuspendLayout();
             this.SuspendLayout();
@@ -49,6 +52,9 @@ namespace MathTexWord {
             // 
             this.grpTool.Items.Add(this.butInsert);
             this.grpTool.Items.Add(this.butEdit);
+            this.grpTool.Items.Add(this.butUpper);
+            this.grpTool.Items.Add(this.butLower);
+            this.grpTool.Items.Add(this.butHelp);
             this.grpTool.Label = "MathTex";
             this.grpTool.Name = "grpTool";
             // 
@@ -70,6 +76,33 @@ namespace MathTexWord {
             this.butEdit.ShowImage = true;
             this.butEdit.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.butEdit_Click);
             // 
+            // butUpper
+            // 
+            this.butUpper.Enabled = false;
+            this.butUpper.Image = global::MathTexWord.Properties.Resources.Previous_16x;
+            this.butUpper.Label = "上一个";
+            this.butUpper.Name = "butUpper";
+            this.butUpper.ShowImage = true;
+            this.butUpper.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.butUpper_Click);
+            // 
+            // butLower
+            // 
+            this.butLower.Enabled = false;
+            this.butLower.Image = global::MathTexWord.Properties.Resources.Next_16x;
+            this.butLower.Label = "下一个";
+            this.butLower.Name = "butLower";
+            this.butLower.ShowImage = true;
+            this.butLower.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.butLower_Click);
+            // 
+            // butHelp
+            // 
+            this.butHelp.Enabled = false;
+            this.butHelp.Image = global::MathTexWord.Properties.Resources.F1Help_16x;
+            this.butHelp.Label = "帮助";
+            this.butHelp.Name = "butHelp";
+            this.butHelp.ShowImage = true;
+            this.butHelp.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.butHelp_Click);
+            // 
             // Designer
             // 
             this.Name = "Designer";
@@ -90,6 +123,9 @@ namespace MathTexWord {
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup grpTool;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton butInsert;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton butEdit;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton butUpper;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton butLower;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton butHelp;
     }
 
     partial class ThisRibbonCollection {

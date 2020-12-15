@@ -3,6 +3,7 @@ using Word = Microsoft.Office.Interop.Word;
 
 namespace MathTexWord {
 
+    [Obsolete]
     internal class TableManager {
 
         private static readonly string IDHeader = "##_MathTexWord";
