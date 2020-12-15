@@ -60,7 +60,9 @@ namespace MathTexWord {
             } else if(oApp.Selection.Tables.Count > 0) {
                 //TODO: I will abondon this method.
                 // Edit formula in table(single line)
-                OpenEdit(oApp.Selection.Tables[1]);
+                if(!OpenEdit(oApp.Selection.Tables[1])) {
+                    OpenEdit();
+                }
             } else {
                 // New inline formula.
                 OpenEdit();
@@ -75,14 +77,14 @@ namespace MathTexWord {
         /// Edit or update formula in table(single line).
         /// </summary>
         /// <param name="table"></param>
-        private void OpenEdit(Word.Table table) {
+        private bool OpenEdit(Word.Table table) {
 
             // Load formula latex.
             var id = TableManager.GetId(table);
             if(id is null) {
                 //id = "New";
                 //TableManager.SetFormula(table, null);
-                return;
+                return false;
             }
             // Edit it and retrieve output image.
             if(Editor.Instance.Update(TableManager.GetFormula(table), id) == DialogResult.OK) {
@@ -103,6 +105,7 @@ namespace MathTexWord {
                     }
                 }
             }
+            return true;
         }
 
         #endregion Table Formula
