@@ -154,7 +154,7 @@ namespace MathTexWord {
                 ShapeManager.SetFormula(shape, formula);
                 shape.ScaleWidth = (float)(Editor.Instance.Scale * 100.0 / Editor.Instance.BaseScale);
                 shape.ScaleHeight = (float)(Editor.Instance.Scale * 100.0 / Editor.Instance.BaseScale);
-                shape.Range.Paragraphs.BaseLineAlignment = Word.WdBaselineAlignment.wdBaselineAlignFarEast50;
+                shape.Range.Paragraphs.BaseLineAlignment = Word.WdBaselineAlignment.wdBaselineAlignCenter;
                 return shape;
             } else {
                 MessageBox.Show("Paste output image failed.");

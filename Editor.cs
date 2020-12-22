@@ -33,6 +33,7 @@ namespace MathTexWord {
 
         public DialogResult New(string id = null) {
             _editor.Text = id is null ? "MathTex - Temproary" : $"MathTex - {id}";
+            Latex = "";
             SetInfo($">>> {id ?? "null"}\n");
             // Call editor
             return _editor.ShowDialog();
