@@ -9,18 +9,20 @@ namespace MathTexWord {
         internal static readonly string IDTail = "droWxeThtaM_##";
         internal static ulong IDIndex = 0;
 
-        internal static string GenerateId() {
-            return $"{IDHeader};{IDIndex++};{DateTime.Now.ToString("yyyyMMddHHmmss")}:\\sqrt{{A}}:{IDTail}";
+        internal static string GenerateId(Word.InlineShape shape) {
+            var id = $"{IDHeader};{IDIndex++};{DateTime.Now.ToString("yyyyMMddHHmmss")}:\\sqrt{{A}}:{IDTail}";
+            shape.Title = id;
+            return id;
         }
 
-        internal static bool CheckDescr(Word.InlineShape shape) {
+        internal static bool Check(Word.InlineShape shape) {
             return shape.Title != null
                 && shape.Title.Contains(IDHeader)
                 && shape.Title.Contains(IDTail);
         }
 
         internal static string GetId(Word.InlineShape shape) {
-            if(CheckDescr(shape)) {
+            if(Check(shape)) {
                 int start = shape.Title.IndexOf(IDHeader);
                 int split = shape.Title.IndexOf(':', start);
                 return shape.Title.Substring(start, split - start);
@@ -29,7 +31,7 @@ namespace MathTexWord {
         }
 
         internal static string GetFormula(Word.InlineShape shape) {
-            if(CheckDescr(shape)) {
+            if(Check(shape)) {
                 int start = shape.Title.IndexOf(IDHeader);
                 int split = shape.Title.IndexOf(':', start) + 1;
                 int end = shape.Title.IndexOf(IDTail) - 1;
@@ -39,8 +41,8 @@ namespace MathTexWord {
         }
 
         internal static string SetFormula(Word.InlineShape shape, string formula = null) {
-            if(!CheckDescr(shape)) {
-                shape.Title = GenerateId();
+            if(!Check(shape)) {
+                shape.Title = GenerateId(shape);
             }
             if(formula != null) {
                 int start = shape.Title.IndexOf(IDHeader);

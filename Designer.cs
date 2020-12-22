@@ -21,26 +21,41 @@ namespace MathTexWord {
             Word.Application oApp = Globals.ThisAddIn.Application;
             Word.Document oDoc = oApp.ActiveDocument;
 
-            Word.Table table = oDoc.Tables.Add(oApp.Selection.Range, 1, 2);
-            //table.Descr = TableManager.GenerateId();
 
+            Word.Row nrow;
             {
-                Word.Cell cell = table.Cell(1, 1);
-                cell.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalCenter;
-                cell.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                if(oApp.Selection.Tables.Count > 0) {
+                    // Adding new line in the exist MathTex table
+                    Word.Table table = oApp.Selection.Tables[oApp.Selection.Tables.Count];
+                    if(TableManager.Check(table)) {
+                        nrow = table.Rows.Add();
+                    } else {
+                        MessageBox.Show("This table not a MathTex object.");
+                        return;
+                    }
+                } else {
+                    Word.Table table = oDoc.Tables.Add(oApp.Selection.Range, 1, 2);
+                    TableManager.GenerateId(table);
+                    nrow = table.Rows[1];
+                    {
+                        Word.Cell cell = nrow.Cells[1];
+                        cell.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                        cell.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    }
+                    {
+                        Word.Cell cell = nrow.Cells[2];
+                        cell.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalBottom;
+                        cell.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphRight;
+                        cell.Range.Text = "(0.0)";
+                    }
+                    {
+                        table.Columns[2].AutoFit();
+                        table.AllowAutoFit = true;
+                        table.AutoFitBehavior(Word.WdAutoFitBehavior.wdAutoFitWindow);
+                    }
+                }
             }
-            {
-                Word.Cell cell = table.Cell(1, 2);
-                cell.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalBottom;
-                cell.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphRight;
-                cell.Range.Text = "(0.0)";
-            }
-
-            table.Columns[2].AutoFit();
-            table.AllowAutoFit = true;
-            table.AutoFitBehavior(Word.WdAutoFitBehavior.wdAutoFitWindow); // Fill page width
-
-            table.Cell(1, 2).Range.Select();
+            nrow.Cells[1].Range.Select();
 
             OpenEdit();
         }
@@ -57,58 +72,11 @@ namespace MathTexWord {
                 && oApp.Selection.InlineShapes != null && oApp.Selection.InlineShapes.Count == 1) {
                 // Edit formula in picture
                 OpenEdit(oApp.Selection.InlineShapes[1]);
-            } else if(oApp.Selection.Tables.Count > 0) {
-                //TODO: I will abondon this method.
-                // Edit formula in table(single line)
-                if(!OpenEdit(oApp.Selection.Tables[1])) {
-                    OpenEdit();
-                }
             } else {
                 // New inline formula.
                 OpenEdit();
             }
         }
-
-
-
-        #region Table Formula
-
-        /// <summary>
-        /// Edit or update formula in table(single line).
-        /// </summary>
-        /// <param name="table"></param>
-        private bool OpenEdit(Word.Table table) {
-
-            // Load formula latex.
-            var id = TableManager.GetId(table);
-            if(id is null) {
-                //id = "New";
-                //TableManager.SetFormula(table, null);
-                return false;
-            }
-            // Edit it and retrieve output image.
-            if(Editor.Instance.Update(TableManager.GetFormula(table), id) == DialogResult.OK) {
-                if(Editor.Instance.OutputImage != null) {
-                    TableManager.SetFormula(table, Editor.Instance.Latex);
-                    Clipboard.SetDataObject(Editor.Instance.OutputImage);
-                    table.Cell(1, 1).Range.Paste();
-                    // Modify image scale.
-                    foreach(Word.InlineShape ils in table.Cell(1, 1).Range.InlineShapes) {
-                        if(ils != null && ils.Type == Word.WdInlineShapeType.wdInlineShapePicture) {
-                            ils.ScaleWidth = (float)(Editor.Instance.Scale * 100.0 / Editor.Instance.BaseScale);
-                            ils.ScaleHeight = (float)(Editor.Instance.Scale * 100.0 / Editor.Instance.BaseScale);
-                            
-                            ils.Title = table.Descr;
-                            table.Descr = "";
-                            MessageBox.Show("This table has been updated to picture.");
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
-        #endregion Table Formula
 
 
         #region Inline Formula
